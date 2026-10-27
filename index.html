@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Desk TI - UNMSM FISI | Presentación de Arquitectura de Software</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#0f172a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col h-screen w-screen overflow-hidden select-none">
+
+  <!-- ========================================================================= -->
+  <!-- BARRA SUPERIOR DE CONTROL Y NAVEGACIÓN (STICKY HEADER) -->
+  <!-- ========================================================================= -->
+  <header class="h-14 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 md:px-6 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs shadow-md">
+          U5
+        </span>
+        <div class="leading-none">
+          <span class="text-xs font-bold text-white tracking-wide block">UNMSM • FISI</span>
+          <span class="text-[10px] text-slate-400 font-medium">Diseño de Sistemas • Caso B</span>
+        </div>
+      </div>
+      <div class="hidden md:block h-4 w-px bg-slate-700 mx-1"></div>
+      <span id="sectionBadge" class="hidden md:inline-flex text-xs font-medium text-blue-300 bg-blue-950/80 px-2.5 py-1 rounded-full border border-blue-800/60 truncate max-w-[280px]">
+        1. Introducción y Contexto • Diapositiva 1
+      </span>
+    </div>
+
+    <!-- Navegación rápida por secciones (Pills) -->
+    <nav class="hidden lg:flex items-center gap-1.5 text-xs font-semibold">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-blue-600 text-white transition-all shadow-sm" data-section="introducción" data-target-slide="1">
+        1. Introducción
+      </button>
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="análisis" data-target-slide="6">
+        2. Análisis
+      </button>
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="arquitectura 4+1" data-target-slide="10">
+        3. Arquitectura 4+1
+      </button>
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="diseño detallado" data-target-slide="16">
+        4. Diseño Detallado
+      </button>
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="cierre" data-target-slide="20">
+        5. Cierre
+      </button>
+    </nav>
+
+    <!-- Controles de pantalla y vista general -->
+    <div class="flex items-center gap-2">
+      <button id="gridBtn" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5 transition-colors" title="Vista General de Diapositivas (G)">
+        <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span class="hidden sm:inline">Índice</span>
+        <span class="kbd-shortcut hidden sm:inline-block">G</span>
+      </button>
+      <button id="fullscreenBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors" title="Alternar Pantalla Completa (F)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- BARRA DE PROGRESO DE LA PRESENTACIÓN -->
+  <div class="w-full bg-slate-800 h-1 shrink-0">
+    <div id="progressBar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full transition-all duration-300 w-[5%]"></div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- CONTENEDOR PRINCIPAL DE DIAPOSITIVAS (VIEWPORT) -->
+  <!-- ========================================================================= -->
+  <main class="flex-1 relative overflow-hidden bg-slate-900 flex items-center justify-center p-3 md:p-6">
+    <div class="w-full h-full max-w-[1600px] max-h-[920px] bg-white text-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200/80 flex flex-col relative">
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 1: PORTADA INSTITUCIONAL -->
+      <!-- ========================================================== -->
+      <section class="slide active flex-col justify-between p-8 md:p-12 w-full h-full bg-gradient-to-br from-slate-50 via-white to-blue-50/40 relative overflow-y-auto custom-scrollbar">
+        <!-- Decoración de fondo sutil -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-100/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200">
+              UNMSM • FISI
+            </span>
+            <span class="text-xs text-slate-500 font-medium">
+              Diseño de Sistemas de Información • Semestre 2026-2
+            </span>
+            <span class="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-slate-100 text-slate-600 border border-slate-200 ml-auto">
+              Versión v1.2
+            </span>
+          </div>
+
+          <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-4xl">
+            Sistema de Mesa de Ayuda de TI <span class="text-blue-600 font-black block md:inline">(Service Desk)</span>
+          </h1>
+          <p class="mt-4 text-base md:text-lg text-slate-600 max-w-3xl leading-relaxed">
+            Prototipo vertical de alta fidelidad basado en las mejores prácticas de <strong class="text-slate-800 font-semibold">ITIL v4</strong>, arquitectura de software bajo el modelo de vistas <strong class="text-slate-800 font-semibold">4+1 de Kruchten</strong> y patrones de diseño orientados a objetos <strong class="text-slate-800 font-semibold">GoF</strong>.
+          </p>
+
+          <div class="mt-6 inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-900 text-sm font-medium">
+            <span class="font-bold">Caso Asignado B:</span>
+            <span>Oficina General de Tecnologías de la Información (OGTI) - Entidad Pública Gubernamental</span>
+          </div>
+        </div>
+
+        <!-- Panel de Integrantes y Datos Académicos -->
+        <div class="mt-8 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+          <div class="md:col-span-8">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+              Equipo de Proyecto - Grupo 5
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <p class="text-xs font-bold text-slate-800">Granda Salazar, Rodrigo C.</p>
+                <p class="text-[11px] font-mono text-slate-500">24200017</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <p class="text-xs font-bold text-slate-800">Quezada Pairazaman, Sebastian</p>
+                <p class="text-[11px] font-mono text-slate-500">24200030</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <p class="text-xs font-bold text-slate-800">Quispe Arango, Juan Pablo</p>
+                <p class="text-[11px] font-mono text-slate-500">24200121</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <p class="text-xs font-bold text-slate-800">Saldaña Sánchez, Luis Mario</p>
+                <p class="text-[11px] font-mono text-slate-500">24200038</p>
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <p class="text-xs font-bold text-slate-800">Treviño Alvarado, Milagros Sofia</p>
+                <p class="text-[11px] font-mono text-slate-500">24200219</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-4 flex flex-col justify-end bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div class="text-xs text-slate-500 font-medium">Docente Titular:</div>
+            <div class="text-sm font-bold text-slate-900 mt-0.5">Ing. Teodoro Andrade Mogollon</div>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-600 pt-3 border-t border-slate-200/80">
+              <span>Semestre: <strong>2026-2</strong></span>
+              <span>Fecha: <strong>07/10/2026</strong></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 2: CONTEXTO ORGANIZACIONAL Y NIVELES DE SOPORTE -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-5">
+          <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+            <span>2.1 Contexto Organizacional</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">
+            Oficina General de Tecnologías de la Información (OGTI)
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Gobernanza digital y provisión de soporte técnico continuo a más de <strong>1,200 servidores públicos</strong> en sedes centrales y desconcentradas.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 flex-1 items-stretch">
+          <!-- Nivel 1 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Soporte Nivel 1 (N1)</span>
+                <span class="text-xs font-mono font-semibold text-slate-500">SPOC</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Mesa de Ayuda (Help Desk)</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Punto único de contacto encargado de la recepción institucional, triaje inicial, registro formal, diagnóstico preliminar y resolución inmediata de incidencias de baja complejidad.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-700">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Restablecimiento de credenciales institucionales</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Soporte ofimático y paquetería estándar</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                  <span>Configuración inicial de periféricos</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-2.5 rounded-lg bg-blue-50 border border-blue-100 text-xs text-blue-900 font-medium">
+              ⚡ SLA Respuesta: <strong>≤ 15 a 30 min</strong>
+            </div>
+          </div>
+
+          <!-- Nivel 2 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Soporte Nivel 2 (N2)</span>
+                <span class="text-xs font-mono font-semibold text-slate-500">In Situ</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Infraestructura y Soporte de Campo</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Equipo técnico especializado en intervención in situ y correctivos avanzados sobre equipamiento físico, redes locales y puestos de trabajo de funcionarios.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-700">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  <span>Mantenimiento correctivo de estaciones y hardware</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  <span>Servidores de impresión y conectividad LAN/WiFi</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  <span>Software corporativo de gestión documental</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-2.5 rounded-lg bg-amber-50 border border-amber-100 text-xs text-amber-900 font-medium">
+              🛠️ SLA Resolución: <strong>≤ 2 a 4 horas</strong>
+            </div>
+          </div>
+
+          <!-- Nivel 3 -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Soporte Nivel 3 (N3)</span>
+                <span class="text-xs font-mono font-semibold text-slate-500">Especializado</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Arquitectura y Seguridad Digital</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Ingenieros de software nuclear, administradores de bases de datos (DBA), seguridad perimetral y enlace con proveedores tecnológicos externos.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs text-slate-700">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                  <span>Bugs en el core del negocio gubernamental</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                  <span>Caídas de servidores centrales y bases de datos</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                  <span>Incidentes de ciberseguridad e intrusiones</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-2.5 rounded-lg bg-purple-50 border border-purple-100 text-xs text-purple-900 font-medium">
+              🔒 Criticidad Máxima: <strong>Escalamiento Forzoso P1</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 p-3.5 rounded-xl bg-blue-900 text-white flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">💡</span>
+            <span><strong>Principio de Diseño:</strong> Cada nivel de atención cuenta con un manejador en la cadena de responsabilidad (<code class="text-blue-300 font-mono">Chain of Responsibility</code>), garantizando delegación jerárquica desatendida.</span>
+          </div>
+          <span class="font-mono text-blue-200 shrink-0">ITIL v4 Service Desk</span>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 3: PROBLEMÁTICA ACTUAL Y JUSTIFICACIÓN (ITIL v4) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-5">
+          <div class="flex items-center gap-2 text-xs font-bold text-red-600 uppercase tracking-wider">
+            <span>2.2 Problema y Justificación</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">
+            Diagnóstico Operativo: El Modelo Artesanal Actual
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            La OGTI operaba mediante hojas de cálculo compartidas, hilos de correo y mensajería informal, generando cuatro deficiencias operativas graves bajo el marco <strong>ITIL v4</strong>.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+          <!-- Deficiencia 1 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-red-600 font-bold text-xs uppercase mb-1">
+                <span class="px-2 py-0.5 rounded bg-red-100">Deficiencia 1</span>
+                <span>Falta de Control Contractual</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Ausencia de Cálculo Formal y Monitoreo de SLAs</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Inexistencia de un mecanismo automatizado que determine la fecha y hora límite exacta (<code class="font-mono text-blue-600">dueAt</code>) según la prioridad de la incidencia. La jefatura carece de visibilidad sobre los plazos contractuales que están por expirar.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-mono">
+              Impacto: Incumplimiento de tiempos de resolución pactados sin aviso previo.
+            </div>
+          </div>
+
+          <!-- Deficiencia 2 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase mb-1">
+                <span class="px-2 py-0.5 rounded bg-amber-100">Deficiencia 2</span>
+                <span>Subjetividad Operativa</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Escalamiento Discrecional y Cuellos de Botella</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                La derivación de tickets entre Nivel 1, Nivel 2 y Nivel 3 se ejecuta manualmente a criterio subjetivo del analista en turno. Esto genera acumulación de incidentes no resueltos en N1 o saturación innecesaria en N3 por mala categorización.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-mono">
+              Impacto: Tiempos de espera muertos y sobredemanda en ingenieros especializados.
+            </div>
+          </div>
+
+          <!-- Deficiencia 3 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-rose-600 font-bold text-xs uppercase mb-1">
+                <span class="px-2 py-0.5 rounded bg-rose-100">Deficiencia 3</span>
+                <span>Riesgo Normativo</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Pérdida de Trazabilidad e Infracción de SLAs</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Incidentes críticos que paralizan servicios gubernamentales (SIGA, caídas de enlace troncal) superan los tiempos tolerables sin emitir alertas tempranas de riesgo ni registrar auditorías inmutables de quién intervino en cada etapa.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-mono">
+              Impacto: Vulnerabilidad en auditorías de la Contraloría e ineficiencia pública.
+            </div>
+          </div>
+
+          <!-- Deficiencia 4 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase mb-1">
+                <span class="px-2 py-0.5 rounded bg-blue-100">Deficiencia 4</span>
+                <span>Falta de Polimorfismo</span>
+              </div>
+              <h3 class="text-base font-bold text-slate-900">Falta de Desacoplamiento por Tipos de Incidencia</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Las diferentes categorías (Hardware, Software, Redes, Accesos) poseen naturalezas operativas, prioridades base y protocolos distintos. Sin embargo, se procesaban con una plantilla plana genérica sin extensibilidad ni especialización.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-slate-50 border border-slate-200 text-[11px] text-slate-700 font-mono">
+              Solución: Jerarquía polimórfica mediante el patrón Factory Method.
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 rounded-xl bg-slate-900 text-white flex items-center justify-between text-xs">
+          <span>🎯 <strong>Justificación ITIL v4:</strong> Formalizar la Práctica de Gestión de Incidentes y Gestión de Niveles de Servicio con un motor determinístico y desacoplado.</span>
+          <span class="font-mono text-slate-300">ISO/IEC 25010</span>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 4: GOBERNANZA ITIL v4: MATRIZ DE CRITICIDAD Y SLAs -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Gobernanza ITIL v4</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+              Matriz de Criticidad y Política de Acuerdos SLA
+            </h2>
+          </div>
+          <!-- Selector interactivo de Tabs -->
+          <div class="flex items-center bg-slate-200/80 p-1 rounded-xl shrink-0">
+            <button class="active px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm transition-all" data-tab-group="sla-tabs" data-tab-target="tab-criticidad">
+              Matriz Criticidad (Impacto x Urgencia)
+            </button>
+            <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all ml-1" data-tab-group="sla-tabs" data-tab-target="tab-slas">
+              Matriz de Tiempos SLA y Escalamiento
+            </button>
+          </div>
+        </div>
+
+        <!-- CONTENIDO TAB 1: MATRIZ DE CRITICIDAD -->
+        <div id="tab-criticidad" data-tab-content="sla-tabs" class="flex-1 flex flex-col justify-between">
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-bold text-slate-900">
+                Intersección Bidimensional ITIL v4: Impacto vs. Urgencia
+              </h3>
+              <span class="text-xs text-slate-500 font-mono">Regla Formal de Determinación de Prioridad</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                    <th class="p-3 w-1/4">Impacto Operativo \ Urgencia</th>
+                    <th class="p-3 text-center">Alta (A)</th>
+                    <th class="p-3 text-center">Media (M)</th>
+                    <th class="p-3 text-center">Baja (B)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
+                      <strong>Alto (A)</strong><br>
+                      <span class="text-[11px] text-slate-500 font-normal">Afecta servicios críticos institucionales o &gt; 50 usuarios</span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p1 inline-block shadow-sm">
+                        P1 - Crítica
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p2 inline-block shadow-sm">
+                        P2 - Alta
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
+                        P3 - Media
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
+                      <strong>Medio (M)</strong><br>
+                      <span class="text-[11px] text-slate-500 font-normal">Afecta una oficina completa o entre 10 y 50 usuarios</span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p2 inline-block shadow-sm">
+                        P2 - Alta
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
+                        P3 - Media
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
+                        P4 - Baja
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
+                      <strong>Bajo (B)</strong><br>
+                      <span class="text-[11px] text-slate-500 font-normal">Afecta a un solo usuario o función accesoria no esencial</span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
+                        P3 - Media
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
+                        P4 - Baja
+                      </span>
+                    </td>
+                    <td class="p-3 text-center">
+                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
+                        P4 - Baja
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-900">
+              <strong class="font-bold">Impacto:</strong> Magnitud del daño sobre la continuidad de los servicios o cantidad de funcionarios inhabilitados.
+            </div>
+            <div class="p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-900">
+              <strong class="font-bold">Urgencia:</strong> Velocidad requerida para mitigar el incidente antes de causar impacto colateral irreversible.
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTENIDO TAB 2: MATRIZ DE TIEMPOS SLA -->
+        <div id="tab-slas" data-tab-content="sla-tabs" class="flex-1 flex flex-col justify-between hidden">
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                  <th class="p-2.5">Prioridad</th>
+                  <th class="p-2.5">Nivel Inicial</th>
+                  <th class="p-2.5">SLA Respuesta (SLA-R)</th>
+                  <th class="p-2.5">SLA Resolución (SLA-T)</th>
+                  <th class="p-2.5">Alerta Observer (Umbral)</th>
+                  <th class="p-2.5">Regla de Escalamiento Jerárquico</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 font-mono text-[11px]">
+                <tr class="hover:bg-red-50/40">
+                  <td class="p-2.5">
+                    <span class="px-2 py-0.5 rounded font-bold badge-p1">P1 (Crítica)</span>
+                  </td>
+                  <td class="p-2.5 text-slate-800 font-semibold">N1 / N2</td>
+                  <td class="p-2.5 font-bold text-slate-900">≤ 15 min</td>
+                  <td class="p-2.5 font-bold text-red-600">≤ 2 horas</td>
+                  <td class="p-2.5 text-amber-700 bg-amber-50/50">Al consumir 75% (1.5 h)</td>
+                  <td class="p-2.5 text-slate-700 font-sans">
+                    Si expira SLA-T o no resolución en N1/N2 → <strong class="text-red-600">Escalamiento Forzoso a N3</strong>
+                  </td>
+                </tr>
+                <tr class="hover:bg-amber-50/40">
+                  <td class="p-2.5">
+                    <span class="px-2 py-0.5 rounded font-bold badge-p2">P2 (Alta)</span>
+                  </td>
+                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
+                  <td class="p-2.5 font-bold text-slate-900">≤ 30 min</td>
+                  <td class="p-2.5 font-bold text-amber-600">≤ 4 horas</td>
+                  <td class="p-2.5 text-amber-700 bg-amber-50/50">Al consumir 75% (3.0 h)</td>
+                  <td class="p-2.5 text-slate-700 font-sans">
+                    Si expira en N1 → Nivel 2; si expira en N2 → Nivel 3
+                  </td>
+                </tr>
+                <tr class="hover:bg-blue-50/40">
+                  <td class="p-2.5">
+                    <span class="px-2 py-0.5 rounded font-bold badge-p3">P3 (Media)</span>
+                  </td>
+                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
+                  <td class="p-2.5 font-bold text-slate-900">≤ 1 hora</td>
+                  <td class="p-2.5 font-bold text-blue-600">≤ 8 horas</td>
+                  <td class="p-2.5 text-blue-700 bg-blue-50/50">Al consumir 80% (6.4 h)</td>
+                  <td class="p-2.5 text-slate-700 font-sans">
+                    Si expira en N1 → Nivel 2
+                  </td>
+                </tr>
+                <tr class="hover:bg-emerald-50/40">
+                  <td class="p-2.5">
+                    <span class="px-2 py-0.5 rounded font-bold badge-p4">P4 (Baja)</span>
+                  </td>
+                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
+                  <td class="p-2.5 font-bold text-slate-900">≤ 2 horas</td>
+                  <td class="p-2.5 font-bold text-emerald-600">≤ 24 horas</td>
+                  <td class="p-2.5 text-emerald-700 bg-emerald-50/50">Al consumir 85% (20.4 h)</td>
+                  <td class="p-2.5 text-slate-700 font-sans">
+                    Si expira en N1 → Nivel 2
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 p-3 rounded-lg bg-slate-900 text-white flex items-center justify-between text-xs">
+            <span>⏱️ <strong>SLA-R:</strong> Tiempo de Primera Respuesta | <strong>SLA-T:</strong> Tiempo de Restablecimiento del Servicio</span>
+            <span class="font-mono text-blue-300">Patrón Observer Activo</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 5: OBJETIVOS, ALCANCE (VERTICAL SLICE) Y RESTRICCIONES -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+            <span>2.3 Objetivos & 2.4 Alcance</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+            Marco de Objetivos, Alcance Vertical y Restricciones
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-5 flex-1">
+          <!-- Objetivos (General y Específicos) -->
+          <div class="md:col-span-6 flex flex-col justify-between">
+            <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600 font-mono">Objetivo General</span>
+              <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+                Diseñar e implementar un <strong>prototipo vertical</strong> de un Sistema de Mesa de Ayuda de TI (Service Desk) bajo las buenas prácticas de <strong>ITIL v4</strong>, que automatice la recepción, cálculo y monitoreo de SLAs, así como el escalamiento jerárquico de incidentes mediante patrones de diseño de software.
+              </p>
+            </div>
+
+            <div class="mt-3 p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex-1">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">Objetivos Específicos</span>
+              <ul class="mt-2 space-y-2 text-xs text-slate-700">
+                <li class="flex items-start gap-2">
+                  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
+                  <span>Formalizar requisitos bajo el estándar internacional <strong>ISO/IEC 25010:2011</strong>.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
+                  <span>Diseñar la arquitectura bajo el modelo de vistas <strong>4+1 de Kruchten</strong> y artefactos <strong>UML 2.5.1</strong> aplicando Factory Method, Chain of Responsibility y Observer.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
+                  <span>Implementar el prototipo vertical en <strong>Node.js / TypeScript</strong> cubriendo de punta a punta el CU-02.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="w-4 h-4 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">4</span>
+                  <span>Validar la solución mediante pruebas unitarias de <strong>Caja Blanca</strong> (cobertura de ramas ≥ 90%) y funcionales de <strong>Caja Negra</strong>.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Alcance In-Scope vs Out-of-Scope & Restricciones -->
+          <div class="md:col-span-6 flex flex-col justify-between">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-emerald-950">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                  <span>✅</span> In-Scope (Vertical Slice)
+                </span>
+                <ul class="mt-2 space-y-1 text-[11px] text-emerald-900 leading-tight">
+                  <li>• Flujo E2E crítico del CU-02</li>
+                  <li>• Capas REST, Service, Domain y Repo</li>
+                  <li>• 3 Patrones GoF obligatorios</li>
+                  <li>• Pruebas T-1s, T, T+1s en fronteras</li>
+                </ul>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-rose-950">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+                  <span>🚫</span> Out-of-Scope
+                </span>
+                <ul class="mt-2 space-y-1 text-[11px] text-rose-900 leading-tight">
+                  <li>• Autenticación compleja / SSO</li>
+                  <li>• Dashboards de BI extensos</li>
+                  <li>• Frontends cosméticos multi-vista</li>
+                  <li>• Change / Problem Management</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Restricciones Técnicas -->
+            <div class="mt-3 p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">Restricciones Metodológicas y Técnicas</span>
+              <div class="mt-2 space-y-2 text-xs">
+                <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                  <strong class="font-bold text-slate-800">R-01 (Trazabilidad 1:1):</strong> Toda clase, método e interfaz en código corresponde estrictamente con el Diagrama de Clases (PE1) y Secuencia (PE2).
+                </div>
+                <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                  <strong class="font-bold text-slate-800">R-02 (Estándar Notacional):</strong> Artefactos visuales compilables en PlantUML bajo OMG UML 2.5.1 y OMG BPMN 2.0.
+                </div>
+                <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                  <strong class="font-bold text-slate-800">R-03 (Microservicio Autónomo):</strong> Ejecutable en entorno local autosuficiente sin requerir servicios privativos de nube.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 6: REQUISITOS FUNCIONALES (MoSCoW) Y NO FUNCIONALES -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>3.1 Análisis de Requisitos</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+              Requisitos Funcionales (MoSCoW) y No Funcionales (ISO 25010)
+            </h2>
+          </div>
+          <!-- Selector interactivo de Tabs -->
+          <div class="flex items-center bg-slate-200/80 p-1 rounded-xl shrink-0">
+            <button class="active px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm transition-all" data-tab-group="req-tabs" data-tab-target="tab-rf">
+              Requisitos Funcionales (RF-01 a RF-06)
+            </button>
+            <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all ml-1" data-tab-group="req-tabs" data-tab-target="tab-rnf">
+              Métricas No Funcionales (ISO/IEC 25010)
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: REQUISITOS FUNCIONALES -->
+        <div id="tab-rf" data-tab-content="req-tabs" class="flex-1 flex flex-col justify-between">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 flex-1">
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-blue-100 text-blue-800">RF-01</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700">Must Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Registro de Incidencia</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Captura título, descripción, categoría (Hardware, Software, Redes, Accesos), impacto y urgencia, generando un ID único.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-01: Registrar Incidencia</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-blue-100 text-blue-800">RF-02</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700">Must Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Inicialización Polimórfica</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Inicializa la entidad de ticket polimórficamente según categoría, calculando la prioridad ITIL y marca temporal exacta de vencimiento (<code class="font-mono">dueAt</code>).</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-01 / Factory Method</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-blue-100 text-blue-800">RF-03</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700">Must Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Verificación Temporal de SLA</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Provee verificación periódica o bajo demanda que evalúa si un ticket ha sobrepasado su fecha/hora límite contractual.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-02 / SlaSchedulerWorker</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-blue-100 text-blue-800">RF-04</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700">Must Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Disparo de Evento de Alerta</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Al detectar expiración de SLA, dispara un evento desacoplado hacia los observadores suscritos (consola y notificador).</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-02 / Observer Pattern</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-blue-100 text-blue-800">RF-05</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-700">Must Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Cadena de Escalamiento</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Delega el ticket vencido secuencialmente (N1 → N2 → N3), actualizando estado a ESCALADO y reasignando el nivel técnico.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-02 / Chain of Responsibility</div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2 py-0.5 rounded font-mono font-bold text-[11px] bg-slate-100 text-slate-800">RF-06</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700">Should Have</span>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Consulta y Trazabilidad</h4>
+                <p class="text-[11px] text-slate-600 mt-1">Permite consultar un ticket por ID, exponiendo nivel asignado, historial inmutable de escalamientos y marcas temporales.</p>
+              </div>
+              <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-slate-500 font-mono">CU-03: Consultar Ticket</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: REQUISITOS NO FUNCIONALES (ISO 25010) -->
+        <div id="tab-rnf" data-tab-content="req-tabs" class="flex-1 flex flex-col justify-between hidden">
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm overflow-x-auto">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                  <th class="p-2.5">Código</th>
+                  <th class="p-2.5">Característica ISO 25010</th>
+                  <th class="p-2.5">Descripción Técnica</th>
+                  <th class="p-2.5">Métrica Cuantitativa</th>
+                  <th class="p-2.5">Método de Verificación</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-mono font-bold text-blue-600">RNF-01</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Rendimiento / Comportamiento temporal</td>
+                  <td class="p-2.5 text-slate-600">Tiempo de respuesta óptimo en <code class="font-mono bg-slate-100 px-1 py-0.5 rounded">POST /tickets</code> bajo carga institucional.</td>
+                  <td class="p-2.5 font-mono font-bold text-slate-900">P95 ≤ 200 ms (50 req/s)</td>
+                  <td class="p-2.5 text-slate-500">Prueba de carga automatizada</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-mono font-bold text-blue-600">RNF-02</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Fiabilidad / Disponibilidad</td>
+                  <td class="p-2.5 text-slate-600">Operación continua durante jornada laboral (08:00 a 18:00 hrs).</td>
+                  <td class="p-2.5 font-mono font-bold text-emerald-600">Uptime ≥ 99.5% | MTTR ≤ 15 min</td>
+                  <td class="p-2.5 text-slate-500">Monitoreo de uptime y logs</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-mono font-bold text-blue-600">RNF-03</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Mantenibilidad / Modularidad</td>
+                  <td class="p-2.5 text-slate-600">Capas limpias y patrones GoF para incorporar categorías sin modificar clientes.</td>
+                  <td class="p-2.5 font-mono font-bold text-indigo-600">Principio OCP | Cero dependencias circulares</td>
+                  <td class="p-2.5 text-slate-500">Análisis estático de dependencias</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-mono font-bold text-blue-600">RNF-04</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Mantenibilidad / Testeabilidad</td>
+                  <td class="p-2.5 text-slate-600">Lógica nuclear validada con pruebas unitarias automatizadas.</td>
+                  <td class="p-2.5 font-mono font-bold text-purple-600">Branch coverage ≥ 90% | Líneas ≥ 85%</td>
+                  <td class="p-2.5 text-slate-500">Reporte automatizado Jest / Vitest</td>
+                </tr>
+                <tr class="hover:bg-slate-50">
+                  <td class="p-2.5 font-mono font-bold text-blue-600">RNF-05</td>
+                  <td class="p-2.5 font-semibold text-slate-800">Seguridad / Integridad</td>
+                  <td class="p-2.5 text-slate-600">Validación estricta de payloads REST, rechazando esquemas malformados.</td>
+                  <td class="p-2.5 font-mono font-bold text-amber-600">100% peticiones inválidas → HTTP 400</td>
+                  <td class="p-2.5 text-slate-500">Pruebas de caja negra con valores límite</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 7: MODELO DE PROCESOS DE NEGOCIO (BPMN 2.0) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>3.2 Modelo de Procesos de Negocio</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Proceso Operativo de Gestión y Escalamiento de Incidencias (BPMN 2.0)
+            </h2>
+          </div>
+          <span class="text-xs font-mono font-bold text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+            Resolución Nativa: 6144 × 2410 px
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor Interactivo SVG/PNG con Pan & Zoom -->
+          <div class="lg:col-span-9 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Modelo de Procesos de Negocio (BPMN 2.0) - Service Desk">
+              <!-- Barra de herramientas flotante -->
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold" title="Restablecer (100%)">
+                  Reset
+                </button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <!-- Escenario del Diagrama -->
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/bpmn.png" onerror="this.src='Assets/01-bpmn.png'" alt="Diagrama BPMN 2.0" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+
+              <div class="absolute bottom-2 left-3 text-[10px] text-slate-400 bg-white/90 backdrop-blur px-2 py-0.5 rounded border border-slate-100 pointer-events-none">
+                Arrastra para mover • Rueda para zoom • Doble clic para restablecer
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Etapas del Proceso -->
+          <div class="lg:col-span-3 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar p-3.5 bg-white rounded-xl border border-slate-200 shadow-sm text-xs">
+            <div>
+              <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+                Lanes y Fases del Flujo
+              </h3>
+              <ol class="space-y-2 text-slate-700">
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">1. Solicitud:</strong>
+                  Servidor público reporta falla vía canal institucional.
+                </li>
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">2. Triaje y Cálculo (N1):</strong>
+                  Clasificación y cómputo de SLA contractual (<code class="font-mono text-blue-600">dueAt</code>).
+                </li>
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">3. Diagnóstico Preliminar:</strong>
+                  Resolución inmediata o retención en bandeja de Nivel 1.
+                </li>
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">4. Monitoreo Concurrente:</strong>
+                  Motor en paralelo evalúa tiempo límite y genera alertas.
+                </li>
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">5. Cadena de Escalamiento:</strong>
+                  Transferencia desatendida a N2 o N3 si expira el SLA.
+                </li>
+                <li class="p-2 rounded bg-slate-50 border border-slate-200/80">
+                  <strong class="text-slate-900 block font-semibold">6. Cierre y Conformidad:</strong>
+                  Registro de causa raíz y acuse del solicitante (48h).
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 8: MODELO DE CASOS DE USO Y ESPECIFICACIÓN CU-02 -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>3.3 Modelo Funcional UML 2.5.1</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Modelo de Casos de Uso y Ficha Técnica del Vertical Slice (CU-02)
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Casos de Uso -->
+          <div class="lg:col-span-6 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Modelo de Casos de Uso (UML 2.5.1) - Service Desk">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/casos-de-uso.svg" onerror="this.src='Assets/Modelo de Casos de Uso (UML 2.5.1) - Sistema de Mesa de Ayuda de TI.svg'" alt="Modelo de Casos de Uso" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ficha Técnica Interactiva CU-02 -->
+          <div class="lg:col-span-6 h-full flex flex-col justify-between overflow-hidden bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+              <div>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">VERTICAL SLICE</span>
+                <h3 class="text-sm font-bold text-slate-900 mt-1">CU-02: Registrar Incidencia y Escalarla al Vencer SLA</h3>
+              </div>
+              <div class="flex gap-1 text-[11px]">
+                <button class="active px-2.5 py-1 rounded-md font-bold bg-blue-600 text-white" data-tab-group="cu02-tabs" data-tab-target="cu-flujo-basico">Flujo Básico</button>
+                <button class="px-2.5 py-1 rounded-md font-bold bg-white text-slate-600 border border-slate-200" data-tab-group="cu02-tabs" data-tab-target="cu-flujos-alt">Alternos & Excepciones</button>
+              </div>
+            </div>
+
+            <!-- Tab 1: Flujo Básico (16 pasos) -->
+            <div id="cu-flujo-basico" data-tab-content="cu02-tabs" class="flex-1 overflow-y-auto custom-scrollbar my-2 pr-1 text-xs space-y-1.5 text-slate-700">
+              <div class="p-2 rounded bg-slate-50 border border-slate-100"><strong class="text-blue-700">Paso 1-4:</strong> Solicitante emite <code class="font-mono">POST /tickets</code>. Controlador valida esquema con <code class="font-mono">CreateTicketDTO</code> y delega a <code class="font-mono">TicketService</code>.</div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100"><strong class="text-blue-700">Paso 5-8:</strong> <code class="font-mono">TicketFactory</code> computa prioridad ITIL y fecha contractual <code class="font-mono">dueAt</code>. Se persiste con estado <code class="font-mono">ABIERTO</code> y nivel <code class="font-mono">NIVEL_1</code>. Retorna HTTP 201 Created.</div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100"><strong class="text-blue-700">Paso 9-11:</strong> <code class="font-mono">SlaSchedulerWorker</code> inspecciona ticket: detecta <code class="font-mono">currentTime &gt; dueAt</code>. Publica <code class="font-mono">SlaBreachEvent</code> vía <code class="font-mono">SlaBreachNotifier</code> a los observadores en paralelo.</div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100"><strong class="text-blue-700">Paso 12-16:</strong> Ticket pasa a la cadena <code class="font-mono">SupportLevelHandler</code>. <code class="font-mono">L1SupportHandler</code> delega a <code class="font-mono">L2SupportHandler</code>, quien actualiza estado a <code class="font-mono">ESCALADO</code>, nivel a <code class="font-mono">NIVEL_2</code> y registra motivo <code class="font-mono">SLA_BREACH_TIMEOUT</code> inmutable. Persiste y finaliza.</div>
+            </div>
+
+            <!-- Tab 2: Alternos y Excepciones -->
+            <div id="cu-flujos-alt" data-tab-content="cu02-tabs" class="flex-1 overflow-y-auto custom-scrollbar my-2 pr-1 text-xs space-y-2 text-slate-700 hidden">
+              <div class="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200">
+                <strong class="text-emerald-900 font-bold block mb-1">A1: Resolución exitosa en N1 antes del vencimiento:</strong>
+                En paso 9, el analista soluciona la falla y actualiza estado a <code class="font-mono">RESUELTO</code>. El worker ignora el ticket por estar inactivo.
+              </div>
+              <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200">
+                <strong class="text-amber-900 font-bold block mb-1">A2: Escalamiento recursivo a Nivel 3:</strong>
+                En paso 14, si la incidencia ya se encontraba en N2 y expira el SLA reasignado, la cadena delega hacia <code class="font-mono">L3SupportHandler</code> (<code class="font-mono">NIVEL_3</code>).
+              </div>
+              <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-200">
+                <strong class="text-rose-900 font-bold block mb-1">E1: Payload inválido (HTTP 400):</strong>
+                En paso 3, campos faltantes o categoría no soportada provocan rechazo inmediato con HTTP 400 Bad Request estructurado.
+              </div>
+              <div class="p-2.5 rounded-lg bg-purple-50 border border-purple-200">
+                <strong class="text-purple-900 font-bold block mb-1">E2: Fallo de observador aislado:</strong>
+                En paso 11, timeout o caída de SMTP es capturada internamente en el observador sin revertir la transacción de escalamiento.
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+              <span>Actores: Servidor Público • N1 • N2 • N3 • Motor SLA</span>
+              <span>Incluye: CU-03, CU-05</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 9: MODELO CONCEPTUAL DE DOMINIO -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>3.4 Análisis Conceptual</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Modelo Conceptual de Dominio (Directrices de Larman)
+            </h2>
+          </div>
+          <span class="text-xs text-slate-500">Abstracción pura del negocio sin acoplamiento tecnológico</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Modelo de Dominio -->
+          <div class="lg:col-span-7 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Modelo Conceptual de Dominio - Service Desk">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/modelo-dominio.svg" onerror="this.src='Assets/Modelo Conceptual de Dominio - Sistema de Mesa de Ayuda de TI (Service Desk).svg'" alt="Modelo Conceptual de Dominio" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diccionario de Clases Conceptuales -->
+          <div class="lg:col-span-5 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Diccionario de Clases Conceptuales
+            </h3>
+            <div class="space-y-2 text-slate-700">
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">Incidencia (Ticket):</strong>
+                <p class="text-[11px] mt-0.5">Entidad central con ciclo de vida (ABIERTO, EN_PROCESO, ESCALADO, RESUELTO, CERRADO) y categorías especializadas.</p>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">SLA (Acuerdo de Servicio):</strong>
+                <p class="text-[11px] mt-0.5">Parámetros contractuales con marca <code class="font-mono">dueAt</code> calculada y umbral de alerta.</p>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">Prioridad:</strong>
+                <p class="text-[11px] mt-0.5">Resultado del cruce bidimensional ITIL v4 entre Impacto y Urgencia (P1 a P4).</p>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">NivelSoporte:</strong>
+                <p class="text-[11px] mt-0.5">Escalafón operativo con competencias asignadas (NIVEL_1, NIVEL_2, NIVEL_3).</p>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">RegistroEscalamiento:</strong>
+                <p class="text-[11px] mt-0.5">Registro inmutable de auditoría con marca temporal, motivo y nivel destino.</p>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-100">
+                <strong class="font-bold text-slate-900 font-mono text-xs">AlertaSLA:</strong>
+                <p class="text-[11px] mt-0.5">Evento de notificación emitido ante proximidad o infracción del tiempo contractual.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 10: ARQUITECTURA 4+1 DE KRUCHTEN (INTRODUCCIÓN) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+            <span>4.1 Arquitectura de Software</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+            El Modelo de Vistas 4+1 de Philippe Kruchten
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Estructurado en observancia de la norma <strong>ISO/IEC/IEEE 42010:2011</strong> para abordar las inquietudes de los diversos interesados (stakeholders).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
+          <!-- Vista Lógica -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Vista 1</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Vista Lógica</h3>
+              <p class="text-xs text-slate-500 font-mono">Logical View</p>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Descompone el microservicio en 4 capas limpias desacopladas e implementa los 3 patrones GoF obligatorios.
+              </p>
+            </div>
+            <button onclick="window.slideDeck.goToSlide(10)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-700 text-xs font-bold text-center transition-colors">
+              Explorar Vista Lógica →
+            </button>
+          </div>
+
+          <!-- Vista de Procesos -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Vista 2</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Vista de Procesos</h3>
+              <p class="text-xs text-slate-500 font-mono">Process View</p>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Aborda concurrencia, sincronización de flujos y el Worker desacoplado de SLAs frente al Event Loop de Node.js.
+              </p>
+            </div>
+            <button onclick="window.slideDeck.goToSlide(11)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-50 text-amber-700 text-xs font-bold text-center transition-colors">
+              Explorar Procesos →
+            </button>
+          </div>
+
+          <!-- Vista de Desarrollo -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Vista 3</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Vista de Desarrollo</h3>
+              <p class="text-xs text-slate-500 font-mono">Development View</p>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Organización de paquetes (<code class="font-mono">src/presentation</code>, <code class="font-mono">application</code>, <code class="font-mono">domain</code>, <code class="font-mono">infrastructure</code>) y Regla DIP.
+              </p>
+            </div>
+            <button onclick="window.slideDeck.goToSlide(12)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 text-xs font-bold text-center transition-colors">
+              Explorar Desarrollo →
+            </button>
+          </div>
+
+          <!-- Vista Física -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Vista 4</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Vista Física / Despliegue</h3>
+              <p class="text-xs text-slate-500 font-mono">Physical View</p>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Topología de ejecución: Cliente HTTP sobre TLS, Proceso Node.js v24 LTS en Puerto 3000 y repositorio indexado.
+              </p>
+            </div>
+            <button onclick="window.slideDeck.goToSlide(13)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-purple-50 text-purple-700 text-xs font-bold text-center transition-colors">
+              Explorar Despliegue →
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 p-4 rounded-xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="px-2 py-0.5 rounded bg-blue-600 text-[10px] font-bold font-mono uppercase tracking-wider">Escenario Integrador (+1)</span>
+            <p class="text-xs text-slate-300 mt-1">El <strong>CU-02 (Escalamiento de Incidencia por Vencimiento de SLA)</strong> valida y conecta armónicamente las 4 vistas arquitectónicas.</p>
+          </div>
+          <button onclick="window.slideDeck.goToSlide(14)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 shadow">
+            Ver Escenario & Tácticas SEI →
+          </button>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 11: VISTA 1: VISTA LÓGICA (LOGICAL VIEW) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Kruchten 4+1 • Vista 1</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Vista Lógica: Capas Limpias y Patrones GoF
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Vista Lógica -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Vista Lógica de la Arquitectura (Kruchten 4+1) - Service Desk">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/vista-logica.svg" onerror="this.src='Assets/Vista Logica de la Arquitectura (Kruchten 4+1) - Service Desk.svg'" alt="Vista Lógica" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de 4 Capas -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Descomposición en 4 Capas
+            </h3>
+            <div class="space-y-2.5 text-slate-700">
+              <div class="p-2.5 rounded bg-blue-50/60 border border-blue-200">
+                <strong class="font-bold text-blue-900 block font-mono text-xs">1. Presentation</strong>
+                <p class="text-[11px] mt-0.5">Controladores REST (<code class="font-mono">TicketController</code>) y validación de entrada con DTOs.</p>
+              </div>
+              <div class="p-2.5 rounded bg-indigo-50/60 border border-indigo-200">
+                <strong class="font-bold text-indigo-900 block font-mono text-xs">2. Application</strong>
+                <p class="text-[11px] mt-0.5">Servicio coordinador (<code class="font-mono">TicketService</code>) orquestador de casos de uso sin acoplamiento técnico.</p>
+              </div>
+              <div class="p-2.5 rounded bg-amber-50/60 border border-amber-200">
+                <strong class="font-bold text-amber-900 block font-mono text-xs">3. Domain (Core Puro)</strong>
+                <p class="text-[11px] mt-0.5">Entidades, <code class="font-mono">TicketFactory</code>, <code class="font-mono">SupportLevelHandler</code>, <code class="font-mono">SlaBreachNotifier</code> e interfaz <code class="font-mono">ITicketRepository</code>.</p>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-50/60 border border-emerald-200">
+                <strong class="font-bold text-emerald-900 block font-mono text-xs">4. Infrastructure</strong>
+                <p class="text-[11px] mt-0.5">Adaptadores concretos: <code class="font-mono">InMemoryTicketRepository</code>, <code class="font-mono">ConsoleLogObserver</code> y <code class="font-mono">SlaSchedulerWorker</code>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 12: VISTA 2: VISTA DE PROCESOS (PROCESS VIEW) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Kruchten 4+1 • Vista 2</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Vista de Procesos: Concurrencia y Flujo Asíncrono de SLAs
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Vista de Procesos -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Vista de Procesos (Kruchten 4+1) - Concurrencia y Flujo Asíncrono de SLAs">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/vista-procesos.svg" onerror="this.src='Assets/Vista de Procesos (Kruchten 4+1) - Concurrencia y Flujo Asíncrono de SLAs.svg'" alt="Vista de Procesos" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Concurrencia -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Concurrencia en Node.js
+            </h3>
+            <div class="space-y-3 text-slate-700">
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Event Loop Principal:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Atiende peticiones HTTP de forma síncrona/no bloqueante en <strong class="text-blue-700">&lt; 20 ms</strong> para la creación de tickets.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Worker Concurrente (SlaSchedulerWorker):</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Temporizador desacoplado que evalúa en segundo plano los tickets activos y despacha eventos ante infracciones sin bloquear la API REST.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Despacho Concurrente a Observadores:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Notificación paralela a canales registrados, aislando latencias de red del hilo de ejecución transaccional.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 13: VISTA 3: VISTA DE DESARROLLO (DEVELOPMENT VIEW) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Kruchten 4+1 • Vista 3</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Vista de Desarrollo: Estructura Modular y Regla de Dependencia
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Vista de Desarrollo -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Vista de Desarrollo (Kruchten 4+1) - Estructura de Paquetes y Módulos">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/vista-desarrollo.svg" onerror="this.src='Assets/Vista de Desarrollo (Kruchten 4+1) - Estructura de Paquetes y Módulos.svg'" alt="Vista de Desarrollo" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Regla de Dependencia -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Organización de Paquetes
+            </h3>
+            <div class="space-y-2 text-slate-700 font-mono text-[11px]">
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <span class="text-blue-700 font-bold block">src/presentation/</span>
+                <span class="text-slate-600 font-sans text-xs">Controladores REST y servidor HTTP.</span>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <span class="text-indigo-700 font-bold block">src/application/</span>
+                <span class="text-slate-600 font-sans text-xs">Servicios orquestadores y DTOs de salida.</span>
+              </div>
+              <div class="p-2 rounded bg-amber-50 border border-amber-200">
+                <span class="text-amber-800 font-bold block">src/domain/</span>
+                <span class="text-slate-600 font-sans text-xs">Entidades, GoF Factoría, Cadena, Observadores.</span>
+              </div>
+              <div class="p-2 rounded bg-emerald-50 border border-emerald-200">
+                <span class="text-emerald-800 font-bold block">src/infrastructure/</span>
+                <span class="text-slate-600 font-sans text-xs">Repositorios concretos, logs y workers.</span>
+              </div>
+              <div class="p-2 rounded bg-purple-50 border border-purple-200">
+                <span class="text-purple-800 font-bold block">tests/</span>
+                <span class="text-slate-600 font-sans text-xs">Pruebas de caja blanca y caja negra.</span>
+              </div>
+            </div>
+            <div class="mt-3 p-2 rounded bg-blue-900 text-white text-[11px] font-sans">
+              🛡️ <strong>Regla DIP:</strong> Las capas internas nunca importan módulos de capas externas.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 14: VISTA 4: VISTA FÍSICA / DESPLIEGUE (PHYSICAL VIEW) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Kruchten 4+1 • Vista 4</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Vista Física: Topología de Despliegue en Ejecución
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Vista Física -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Vista Física - Despliegue (Kruchten 4+1) - Topología de Ejecución">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/vista-fisica.svg" onerror="this.src='Assets/Vista Física - Despliegue (Kruchten 4+1) - Topología de Ejecución.svg'" alt="Vista Física" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel de Nodos Físicos -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Nodos de Ejecución
+            </h3>
+            <div class="space-y-3 text-slate-700">
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Estación Cliente:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Navegador / Postman / Consola emitiendo peticiones HTTP/JSON sobre TLS hacia la API.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Servidor de Aplicación:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Proceso <strong class="text-blue-700">Node.js v24 LTS</strong> en el puerto TCP 3000 ejecutando la API REST y el worker temporal en el mismo espacio seguro.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">Subsistema de Persistencia:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Acceso desacoplado a través de <code class="font-mono text-blue-600">ITicketRepository</code>, resuelto en memoria concurrente (<code class="font-mono">InMemoryTicketRepository</code>).
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 15: VISTA +1: ESCENARIO INTEGRADOR Y TÁCTICAS SEI -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+            <span>Kruchten 4+1 • Escenario (+1)</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+            Escenario Integrador CU-02 y Tácticas Arquitectónicas (SEI / ADD)
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Justificación de decisiones según la metodología de Bass, Clements y Kazman (Software Engineering Institute).
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 flex-1">
+          <!-- Tácticas de Rendimiento -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">Rendimiento (RNF-01)</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">P95 ≤ 200 ms</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Optimización de cómputo algorítmico y estructuras en memoria para alta concurrencia.
+              </p>
+              <div class="mt-4 space-y-2 text-xs text-slate-700">
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Cálculo Estático Anticipado:</strong>
+                  La factoría calcula la fecha absoluta <code class="font-mono text-blue-600">dueAt</code> al instanciar el ticket, permitiendo verificación en tiempo constante <strong class="font-mono text-blue-700">O(1)</strong> (<code class="font-mono">now &gt; dueAt</code>).
+                </div>
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Persistencia Indexada:</strong>
+                  Estructura <code class="font-mono text-blue-600">Map&lt;string, Ticket&gt;</code> con costo de acceso, lectura y actualización en tiempo constante <strong class="font-mono text-blue-700">O(1)</strong>.
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 text-[11px] font-mono text-blue-600 font-semibold bg-blue-50 p-2 rounded">
+              ⚡ Complejidad O(1) garantizada
+            </div>
+          </div>
+
+          <!-- Tácticas de Disponibilidad -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">Disponibilidad (RNF-02)</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Uptime ≥ 99.5%</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Tolerancia a fallos en integración telemática y continuidad operativa.
+              </p>
+              <div class="mt-4 space-y-2 text-xs text-slate-700">
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Aislamiento de Excepciones:</strong>
+                  Cada observador captura fallos externos (ej. caída de servidor SMTP) evitando que se interrumpa la transacción de escalamiento.
+                </div>
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Degradación Elegante:</strong>
+                  La indisponibilidad de un canal de alerta no detiene la transferencia jerárquica de soporte en la cadena de responsabilidad.
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 text-[11px] font-mono text-emerald-600 font-semibold bg-emerald-50 p-2 rounded">
+              🛡️ Tolerancia a Fallos en Observadores
+            </div>
+          </div>
+
+          <!-- Tácticas de Mantenibilidad -->
+          <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800">Mantenibilidad (RNF-03/04)</span>
+              <h3 class="text-base font-bold text-slate-900 mt-2">Modularidad & Testeabilidad</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Extensibilidad sin tocar clientes y facilidad de pruebas automatizadas.
+              </p>
+              <div class="mt-4 space-y-2 text-xs text-slate-700">
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Principio Abierto/Cerrado (OCP):</strong>
+                  Nuevas categorías o eslabones de soporte se agregan extendiendo clases sin modificar el código de la aplicación.
+                </div>
+                <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                  <strong class="text-slate-900 block font-semibold">Inyección de Dependencias (DI):</strong>
+                  Repositorios y manejadores se inyectan en constructores, permitiendo aislamiento total con mocks en pruebas unitarias.
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 text-[11px] font-mono text-purple-600 font-semibold bg-purple-50 p-2 rounded">
+              🧪 Branch Coverage ≥ 90%
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 16: DISEÑO DETALLADO: DIAGRAMA DE CLASES (UML 2.5.1) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>4.2 Diseño Orientado a Objetos</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Diagrama de Clases -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/clases-diseno.svg" onerror="this.src='Assets/Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI.svg'" alt="Diagrama de Clases" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selector de Patrones GoF -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Patrones GoF Implementados
+            </h3>
+            <div class="space-y-2.5 text-slate-700">
+              <div class="p-2.5 rounded bg-blue-50/70 border border-blue-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 font-mono">Creacional</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">1. Factory Method:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Clase base abstracta <code class="font-mono text-blue-600">Ticket</code> y factorías concretas por categoría (<code class="font-mono">HardwareTicketFactory</code>, etc.) que calculan el SLA exacto.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-emerald-50/70 border border-emerald-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 font-mono">Comportamiento</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">2. Chain of Responsibility:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Manejador base <code class="font-mono text-emerald-700">SupportLevelHandler</code> con enlace <code class="font-mono">nextHandler</code> y eslabones concretos: <code class="font-mono">L1SupportHandler</code>, <code class="font-mono">L2SupportHandler</code> y <code class="font-mono">L3SupportHandler</code>.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-amber-50/70 border border-amber-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 font-mono">Comportamiento</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">3. Observer Pattern:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Interfaz <code class="font-mono text-amber-700">ISlaSubject</code> en <code class="font-mono">SlaBreachNotifier</code> que notifica concurrentemente a <code class="font-mono">ConsoleLogObserver</code> y observadores suscritos.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 font-mono">Estructural</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">4. Repository Pattern:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Interfaz desacoplada <code class="font-mono text-slate-800">ITicketRepository</code> e implementación en memoria <code class="font-mono">InMemoryTicketRepository</code>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 17: DISEÑO DETALLADO: DIAGRAMA DE SECUENCIA (CU-02) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>4.3 Modelado Dinámico UML 2.5.1</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Diagrama de Secuencia - Caso de Uso Crítico (CU-02)
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Diagrama de Secuencia -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Secuencia - CU-02 (UML 2.5.1) - Microservicio Mesa de Ayuda TI">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/secuencia-cu02.svg" onerror="this.src='Assets/Diagrama de Secuencia Casos de uso Critico CU-02.svg'" alt="Diagrama de Secuencia" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fragmentos Combinados y Líneas de Vida -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Fragmentos Combinados UML 2.5.1
+            </h3>
+            <div class="space-y-2 text-slate-700">
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-mono text-blue-700 font-bold block">loop (Ciclo Temporal):</strong>
+                <span class="text-[11px]">Inspección periódica del worker sobre la colección de tickets abiertos.</span>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-mono text-amber-700 font-bold block">alt (Bifurcación [now &gt; dueAt]):</strong>
+                <span class="text-[11px]">Si expiró SLA dispara alerta y delega a N2/N3; en caso contrario mantiene monitoreo pasivo.</span>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-mono text-emerald-700 font-bold block">par (Notificación Paralela):</strong>
+                <span class="text-[11px]">Despacho concurrente a múltiples observadores sin bloquear el hilo principal.</span>
+              </div>
+              <div class="p-2 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-mono text-purple-700 font-bold block">opt (Acciones de Contingencia):</strong>
+                <span class="text-[11px]">Captura de excepciones y generación de trazas ante fallas en canales externos.</span>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-slate-100">
+              <span class="text-[11px] font-bold text-slate-800 block mb-1">Catálogo de 9 Líneas de Vida:</span>
+              <div class="flex flex-wrap gap-1 font-mono text-[10px]">
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;boundary&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;control&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;creator&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;entity&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;worker&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;subject&gt;&gt;</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">&lt;&lt;handler&gt;&gt;</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 18: DISEÑO DETALLADO: DIAGRAMA DE ESTADOS (ITIL v4) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>4.4 Ciclo de Vida del Ticket ITIL v4</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Diagrama de Estados: Actividades Internas y Matriz de Transiciones
+            </h2>
+          </div>
+          <!-- Filtro de transiciones -->
+          <div class="hidden sm:flex items-center gap-1 bg-slate-200/80 p-1 rounded-xl text-xs font-bold">
+            <button class="state-filter-btn px-2.5 py-1 rounded-lg bg-blue-600 text-white transition-all" data-filter="all">Todas (9)</button>
+            <button class="state-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-all" data-filter="normal">Flujo Normal</button>
+            <button class="state-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-all" data-filter="sla">Escalamiento SLA</button>
+            <button class="state-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 hover:text-slate-900 transition-all" data-filter="cierre">Cierre y Excepciones</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Diagrama de Estados -->
+          <div class="lg:col-span-6 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Estados - Ciclo de Vida del Ticket de TI">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/estados-ticket.svg" onerror="this.src='Assets/Diagrama de Estados - Ciclo de Vida del Ticket de TI.svg'" alt="Diagrama de Estados" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Matriz de Transiciones y Actividades Internas -->
+          <div class="lg:col-span-6 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <!-- Resumen de 5 Estados -->
+            <div class="mb-2">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono">Los 5 Estados del Sistema</span>
+              <div class="grid grid-cols-5 gap-1 text-[10px] text-center mt-1 font-mono font-bold">
+                <div class="p-1 rounded bg-blue-100 text-blue-800">ABIERTO</div>
+                <div class="p-1 rounded bg-amber-100 text-amber-800">EN_PROCESO</div>
+                <div class="p-1 rounded bg-red-100 text-red-800">ESCALADO</div>
+                <div class="p-1 rounded bg-emerald-100 text-emerald-800">RESUELTO</div>
+                <div class="p-1 rounded bg-slate-200 text-slate-800">CERRADO</div>
+              </div>
+            </div>
+
+            <!-- Tabla de Transiciones con Filtro -->
+            <div class="overflow-x-auto flex-1 mt-1">
+              <table class="w-full text-left border-collapse text-[11px]">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                    <th class="p-2">Transición</th>
+                    <th class="p-2">Evento [Guarda] / Efecto</th>
+                    <th class="p-2">Justificación Técnica</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr class="state-transition-row hover:bg-slate-50" data-category="normal">
+                    <td class="p-2 font-mono font-bold text-slate-900">● → ABIERTO</td>
+                    <td class="p-2 font-mono text-blue-700">registrarIncidencia() / init dueAt</td>
+                    <td class="p-2 text-slate-600 font-sans">Cómputo inicial de prioridad ITIL y hora límite dueAt.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-slate-50" data-category="normal">
+                    <td class="p-2 font-mono font-bold text-slate-900">ABIERTO → EN_PROCESO</td>
+                    <td class="p-2 font-mono text-amber-700">tomarTicket() [disponible]</td>
+                    <td class="p-2 text-slate-600 font-sans">Operador de Nivel 1 asume atención del requerimiento.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-red-50/50" data-category="sla">
+                    <td class="p-2 font-mono font-bold text-red-700">EN_PROCESO → ESCALADO</td>
+                    <td class="p-2 font-mono text-red-700">vencimientoSLA() [now &gt; dueAt] / alertar</td>
+                    <td class="p-2 text-slate-600 font-sans"><strong>Vertical Slice:</strong> Expiró SLA-T; se transfiere ticket a Nivel 2.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-red-50/50" data-category="sla">
+                    <td class="p-2 font-mono font-bold text-red-700">ESCALADO → ESCALADO</td>
+                    <td class="p-2 font-mono text-red-700">vencimientoSLA() [now &gt; dueAt &amp;&amp; N2] / a N3</td>
+                    <td class="p-2 text-slate-600 font-sans">Escalamiento recursivo: Incidencia en N2 vuelve a vencer y pasa a N3.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-slate-50" data-category="normal">
+                    <td class="p-2 font-mono font-bold text-slate-900">EN_PROCESO → RESUELTO</td>
+                    <td class="p-2 font-mono text-emerald-700">registrarSolucion() [restablecido]</td>
+                    <td class="p-2 text-slate-600 font-sans">Especialista registra causa raíz y restablece servicio.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-slate-50" data-category="cierre">
+                    <td class="p-2 font-mono font-bold text-slate-900">RESUELTO → EN_PROCESO</td>
+                    <td class="p-2 font-mono text-purple-700">rechazarConformidad() [persiste]</td>
+                    <td class="p-2 text-slate-600 font-sans">Reapertura dentro de 48h si el solicitante reporta falla.</td>
+                  </tr>
+                  <tr class="state-transition-row hover:bg-slate-50" data-category="cierre">
+                    <td class="p-2 font-mono font-bold text-slate-900">RESUELTO → CERRADO</td>
+                    <td class="p-2 font-mono text-slate-700">confirmar() o timeoutConformidad(48h)</td>
+                    <td class="p-2 text-slate-600 font-sans">Cierre formal o cierre administrativo automático por inacción.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 19: DISEÑO DETALLADO: DIAGRAMA DE COMPONENTES -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>4.5 Arquitectura Modular UML 2.5.1</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Diagrama de Componentes: Acoplamiento, Lollipops & Sockets
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Diagrama de Componentes -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Componentes (UML 2.5.1) - Service Desk">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/componentes-sistema.svg" onerror="this.src='Assets/Diagrama de Componentes (UML 2.5.1) - Service Desk.svg'" alt="Diagrama de Componentes" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Principios de Acoplamiento y Sustituibilidad -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Principios de Interconexión
+            </h3>
+            <div class="space-y-3 text-slate-700">
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">1. Aislamiento Absoluto del Dominio:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Las entidades y patrones de negocio operan puros: cero dependencias a librerías de terceros, bases de datos o protocolos HTTP.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <strong class="font-bold text-slate-900 block font-mono text-xs">2. Coordinación por Puertos:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  <code class="font-mono text-blue-600">TicketService</code> provee <code class="font-mono">ITicketService</code> al controlador y consume interfaces requeridas del dominio y de repositorio.
+                </p>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-50 border border-emerald-200">
+                <strong class="font-bold text-emerald-900 block font-mono text-xs">3. Sustituibilidad (Lollipop & Socket):</strong>
+                <p class="text-[11px] mt-1 leading-relaxed text-emerald-950">
+                  Se puede migrar de <code class="font-mono">InMemoryTicketRepository</code> hacia PostgreSQL / Prisma implementando <code class="font-mono">ITicketRepository</code> sin modificar una sola línea de código en la capa de aplicación ni en el dominio.
+                </p>
+              </div>
+            </div>
+            <button onclick="window.slideDeck.goToSlide(19)" class="mt-3 w-full p-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-bold transition-colors shadow flex items-center justify-center gap-1.5">
+              <span>Ver Conclusiones del Proyecto</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 20: CONCLUSIONES Y RECOMENDACIONES TÉCNICAS -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
+        <div class="mb-4">
+          <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+            <span>5.1 Síntesis y Evaluación</span>
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
+            Conclusiones y Recomendaciones Técnicas
+          </h2>
+          <p class="text-sm text-slate-600 mt-1">
+            Validación de objetivos frente a los estándares de ingeniería de software, arquitectura limpia y gobernanza ITIL v4.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+          <!-- Conclusión 1 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center gap-2 text-blue-600 font-bold text-xs uppercase mb-1">
+                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-[11px] font-mono font-bold">1</span>
+                <span>Gobernanza ITIL v4 & SLAs</span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900">Erradicación del Escalamiento Discrecional</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                Se sustituyó exitosamente el modelo artesanal previo mediante el cómputo determinístico anticipado de <code class="font-mono text-blue-600">dueAt</code> y la matriz bidimensional de criticidad (P1 a P4). Esto elimina la discrecionalidad humana en los traspasos y asegura el cumplimiento estricto de SLAs para más de 1,200 servidores públicos.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-blue-50/70 border border-blue-100 text-[11px] text-blue-900 font-medium">
+              ✓ Control contractual en tiempo real y visibilidad para la jefatura OGTI.
+            </div>
+          </div>
+
+          <!-- Conclusión 2 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase mb-1">
+                <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-800 flex items-center justify-center text-[11px] font-mono font-bold">2</span>
+                <span>Arquitectura 4+1 & DIP</span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900">Aislamiento Absoluto del Núcleo de Dominio</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                La aplicación de los principios de Clean Architecture y la Inversión de Dependencias (DIP) aisló las reglas del negocio de cualquier librería, base de datos o protocolo HTTP. La relación entre interfaces provistas y requeridas (Lollipop & Socket) garantiza la sustitución de la persistencia sin tocar la lógica de negocio.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-indigo-50/70 border border-indigo-100 text-[11px] text-indigo-900 font-medium">
+              ✓ Migración transparente a PostgreSQL / Prisma sin reescribir el dominio.
+            </div>
+          </div>
+
+          <!-- Conclusión 3 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase mb-1">
+                <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-[11px] font-mono font-bold">3</span>
+                <span>Patrones GoF Sinérgicos</span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900">Solución Modular a Deficiencias Operativas</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                La orquestación de <strong class="text-slate-800">Factory Method</strong> (polimorfismo por categoría), <strong class="text-slate-800">Chain of Responsibility</strong> (delegación secuencial desacoplada N1→N2→N3) y <strong class="text-slate-800">Observer</strong> (alertas concurrentes con degradación elegante) solucionó integralmente los cuatro problemas identificados en la OGTI.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-emerald-50/70 border border-emerald-100 text-[11px] text-emerald-900 font-medium">
+              ✓ Principio Abierto/Cerrado (OCP) cumplido al 100%.
+            </div>
+          </div>
+
+          <!-- Conclusión 4 -->
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between hover-lift">
+            <div>
+              <div class="flex items-center gap-2 text-purple-600 font-bold text-xs uppercase mb-1">
+                <span class="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[11px] font-mono font-bold">4</span>
+                <span>Calidad ISO/IEC 25010</span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900">Validación Cuantitativa y Testeabilidad</h3>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                El prototipo vertical demostró tiempos de respuesta <strong class="font-mono text-purple-700">P95 ≤ 200 ms</strong> bajo carga concurrente, disponibilidad proyectada <strong class="font-mono text-purple-700">≥ 99.5%</strong> y una cobertura de pruebas unitarias de caja blanca de ramas (<em class="italic">branch coverage</em>) <strong class="font-mono text-purple-700">≥ 90%</strong> en la cadena de escalamiento.
+              </p>
+            </div>
+            <div class="mt-3 p-2 rounded bg-purple-50/70 border border-purple-100 text-[11px] text-purple-900 font-medium">
+              ✓ Tácticas de rendimiento O(1) comprobadas experimentalmente.
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- ========================================================== -->
+      <!-- SLIDE 21: CIERRE: AGRADECIMIENTOS Y RONDA DE PREGUNTAS -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col justify-between p-8 md:p-12 w-full h-full bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white relative overflow-y-auto custom-scrollbar">
+        <!-- Luces y efectos decorativos de fondo -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Cabecera Institucional Superior -->
+        <div class="relative z-10 flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-white text-sm shadow-lg shadow-blue-500/30">
+              UNMSM
+            </span>
+            <div>
+              <h4 class="text-xs font-bold text-white tracking-wide">UNIVERSIDAD NACIONAL MAYOR DE SAN MARCOS</h4>
+              <p class="text-[11px] text-slate-400">Facultad de Ingeniería de Sistemas e Informática • Decana de América</p>
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-blue-950 text-blue-300 border border-blue-800">
+            DSI • Semestre 2026-2
+          </span>
+        </div>
+
+        <!-- Centro: Mensaje de Agradecimiento e Invitación a Preguntas -->
+        <div class="relative z-10 my-auto py-6 text-center max-w-3xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-300 text-xs font-semibold mb-4">
+            <span>✨</span>
+            <span>Conclusión de la Defensa de Proyecto</span>
+          </div>
+
+          <h2 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight">
+            ¡Muchas Gracias por su Atención!
+          </h2>
+
+          <p class="mt-4 text-base md:text-xl text-slate-300 font-light leading-relaxed">
+            Quedamos a su entera disposición para dar inicio a la <strong class="text-white font-semibold">Ronda de Preguntas y Respuestas (Q&A)</strong> sobre el diseño arquitectónico, decisiones técnicas y prototipo.
+          </p>
+
+          <div class="mt-6 inline-flex items-center gap-3 px-5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
+            <span class="text-emerald-400 font-mono font-bold">● DISEÑO DE SISTEMAS DE INFORMACION </span>
+            <span class="text-slate-500">|</span>
+            <span>Microservicio Service Desk TI (Caso B - OGTI)</span>
+          </div>
+        </div>
+
+        <!-- Panel Inferior: Créditos del Equipo y Docente -->
+        <div class="relative z-10 pt-4 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div class="md:col-span-8">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5 font-mono">
+              Integrantes - Grupo 5:
+            </span>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Rodrigo Granda Salazar (24200017) • Sebastian Quezada Pairazaman (2420030) • Juan Pablo Quispe Arango (24200121) • Luis Saldaña Sánchez (24200038) • Milagros Treviño Alvarado (24200219)
+            </p>
+          </div>
+
+          <div class="md:col-span-4 flex items-center justify-start md:justify-end gap-2">
+            <button onclick="window.slideDeck.goToSlide(0)" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all flex items-center gap-1.5 shadow">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+              <span>Inicio (Slide 1)</span>
+            </button>
+            <button onclick="window.slideDeck.openGrid()" class="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-lg shadow-blue-600/30">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              <span>Índice Completo</span>
+            </button>
+          </div>
+        </div>
+      </section>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- BARRA DE CONTROL FLOTANTE INFERIOR -->
+  <!-- ========================================================================= -->
+  <footer class="h-14 bg-slate-900/95 backdrop-blur border-t border-slate-800 px-4 md:px-8 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-2 text-xs text-slate-400">
+      <span class="hidden sm:inline">Navegación:</span>
+      <span class="kbd-shortcut">←</span>
+      <span class="kbd-shortcut">→</span>
+      <span class="hidden md:inline text-slate-500">o</span>
+      <span class="kbd-shortcut hidden md:inline-block">Espacio</span>
+      <span class="hidden lg:inline text-slate-500 ml-2">• Zoom en diagramas con rueda del ratón y arrastre</span>
+    </div>
+
+    <!-- Indicador de Slide y Botones Anterior / Siguiente -->
+    <div class="flex items-center gap-3">
+      <button id="prevBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold flex items-center gap-1.5 transition-colors" title="Diapositiva Anterior (←)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <span class="hidden sm:inline">Anterior</span>
+      </button>
+
+      <span id="slideCounter" class="px-3 py-1 rounded-md bg-slate-800/80 text-blue-300 font-mono font-bold text-xs border border-slate-700">
+        01 / 21
+      </span>
+
+      <button id="nextBtn" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-colors" title="Siguiente Diapositiva (→ / Espacio)">
+        <span class="hidden sm:inline">Siguiente</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL DE PANTALLA COMPLETA PARA INSPECCIÓN DE DIAGRAMAS (LIGHTBOX) -->
+  <!-- ========================================================================= -->
+  <div id="diagramModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col p-3 md:p-6">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-600 text-white font-mono">
+          INSPECCIÓN ARQUITECTÓNICA 100% VECTORIAL
+        </span>
+        <h3 id="modalTitle" class="text-sm md:text-base font-bold text-white truncate max-w-xl">
+          Diagrama
+        </h3>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-400 hidden sm:inline">Usa la rueda para zoom o arrastra para mover</span>
+        <button id="closeModalBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-red-600 text-slate-200 hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
+          <span>Cerrar</span>
+          <span class="kbd-shortcut bg-slate-700 text-slate-300 border-slate-600">Esc</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor Pan & Zoom a Pantalla Completa -->
+    <div class="flex-1 mt-3 w-full h-full min-h-0 bg-white rounded-xl overflow-hidden border border-slate-700 relative">
+      <div id="modalPanZoomContainer" class="pan-zoom-container w-full h-full">
+        <!-- Barra de herramientas flotante -->
+        <div class="absolute top-4 right-4 z-20 flex items-center gap-2 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl border border-slate-300 shadow-xl">
+          <span class="zoom-level-badge text-xs font-mono font-bold text-slate-700 px-1.5">100%</span>
+          <button class="btn-zoom-in p-1.5 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+          </button>
+          <button class="btn-zoom-out p-1.5 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+          </button>
+          <button class="btn-zoom-reset px-2.5 py-1 rounded hover:bg-slate-100 text-slate-700 text-xs font-bold">
+            Reset (100%)
+          </button>
+        </div>
+
+        <div class="pan-zoom-viewport">
+          <div class="pan-zoom-stage">
+            <img id="modalImg" src="" alt="Diagrama Maximizado" class="diagram-image max-h-[82vh] w-auto">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL DE VISUALIZACIÓN GENERAL DE DIAPOSITIVAS (GRID OVERVIEW) -->
+  <!-- ========================================================================= -->
+  <div id="gridModal" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col p-4 md:p-8">
+    <div class="flex items-center justify-between pb-4 border-b border-slate-800 shrink-0">
+      <div>
+        <h2 class="text-xl font-bold text-white">Selector Rápido de Diapositivas</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Selecciona cualquier diapositiva para saltar directamente a ella durante la exposición</p>
+      </div>
+      <button id="closeGridBtn" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors">
+        Cerrar (Esc)
+      </button>
+    </div>
+
+    <div class="flex-1 mt-4 overflow-y-auto custom-scrollbar pr-2">
+      <div id="gridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 pb-4">
+        <!-- Renderizado dinámicamente por app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Script Principal -->
+  <script src="app.js"></script>
+</body>
+</html>
