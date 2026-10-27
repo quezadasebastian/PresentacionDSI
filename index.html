@@ -66,16 +66,16 @@
       <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-blue-600 text-white transition-all shadow-sm" data-section="introducción" data-target-slide="1">
         1. Introducción
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="análisis" data-target-slide="6">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="análisis" data-target-slide="5">
         2. Análisis
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="arquitectura 4+1" data-target-slide="10">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="arquitectura 4+1" data-target-slide="9">
         3. Arquitectura 4+1
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="diseño detallado" data-target-slide="16">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="diseño detallado" data-target-slide="15">
         4. Diseño Detallado
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="cierre" data-target-slide="20">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="cierre" data-target-slide="19">
         5. Cierre
       </button>
     </nav>
@@ -391,204 +391,7 @@
       </section>
 
       <!-- ========================================================== -->
-      <!-- SLIDE 4: GOBERNANZA ITIL v4: MATRIZ DE CRITICIDAD Y SLAs -->
-      <!-- ========================================================== -->
-      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-          <div>
-            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
-              <span>Gobernanza ITIL v4</span>
-            </div>
-            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-0.5">
-              Matriz de Criticidad y Política de Acuerdos SLA
-            </h2>
-          </div>
-          <!-- Selector interactivo de Tabs -->
-          <div class="flex items-center bg-slate-200/80 p-1 rounded-xl shrink-0">
-            <button class="active px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 text-white shadow-sm transition-all" data-tab-group="sla-tabs" data-tab-target="tab-criticidad">
-              Matriz Criticidad (Impacto x Urgencia)
-            </button>
-            <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all ml-1" data-tab-group="sla-tabs" data-tab-target="tab-slas">
-              Matriz de Tiempos SLA y Escalamiento
-            </button>
-          </div>
-        </div>
-
-        <!-- CONTENIDO TAB 1: MATRIZ DE CRITICIDAD -->
-        <div id="tab-criticidad" data-tab-content="sla-tabs" class="flex-1 flex flex-col justify-between">
-          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-slate-900">
-                Intersección Bidimensional ITIL v4: Impacto vs. Urgencia
-              </h3>
-              <span class="text-xs text-slate-500 font-mono">Regla Formal de Determinación de Prioridad</span>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs text-left border-collapse">
-                <thead>
-                  <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
-                    <th class="p-3 w-1/4">Impacto Operativo \ Urgencia</th>
-                    <th class="p-3 text-center">Alta (A)</th>
-                    <th class="p-3 text-center">Media (M)</th>
-                    <th class="p-3 text-center">Baja (B)</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                  <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
-                      <strong>Alto (A)</strong><br>
-                      <span class="text-[11px] text-slate-500 font-normal">Afecta servicios críticos institucionales o &gt; 50 usuarios</span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p1 inline-block shadow-sm">
-                        P1 - Crítica
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p2 inline-block shadow-sm">
-                        P2 - Alta
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
-                        P3 - Media
-                      </span>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
-                      <strong>Medio (M)</strong><br>
-                      <span class="text-[11px] text-slate-500 font-normal">Afecta una oficina completa o entre 10 y 50 usuarios</span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p2 inline-block shadow-sm">
-                        P2 - Alta
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
-                        P3 - Media
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
-                        P4 - Baja
-                      </span>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-semibold text-slate-800 bg-slate-50/50">
-                      <strong>Bajo (B)</strong><br>
-                      <span class="text-[11px] text-slate-500 font-normal">Afecta a un solo usuario o función accesoria no esencial</span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p3 inline-block shadow-sm">
-                        P3 - Media
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
-                        P4 - Baja
-                      </span>
-                    </td>
-                    <td class="p-3 text-center">
-                      <span class="px-3 py-1.5 rounded-lg font-bold text-xs badge-p4 inline-block shadow-sm">
-                        P4 - Baja
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="p-3 rounded-lg bg-blue-50 border border-blue-200 text-blue-900">
-              <strong class="font-bold">Impacto:</strong> Magnitud del daño sobre la continuidad de los servicios o cantidad de funcionarios inhabilitados.
-            </div>
-            <div class="p-3 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-900">
-              <strong class="font-bold">Urgencia:</strong> Velocidad requerida para mitigar el incidente antes de causar impacto colateral irreversible.
-            </div>
-          </div>
-        </div>
-
-        <!-- CONTENIDO TAB 2: MATRIZ DE TIEMPOS SLA -->
-        <div id="tab-slas" data-tab-content="sla-tabs" class="flex-1 flex flex-col justify-between hidden">
-          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm overflow-x-auto">
-            <table class="w-full text-xs text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
-                  <th class="p-2.5">Prioridad</th>
-                  <th class="p-2.5">Nivel Inicial</th>
-                  <th class="p-2.5">SLA Respuesta (SLA-R)</th>
-                  <th class="p-2.5">SLA Resolución (SLA-T)</th>
-                  <th class="p-2.5">Alerta Observer (Umbral)</th>
-                  <th class="p-2.5">Regla de Escalamiento Jerárquico</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 font-mono text-[11px]">
-                <tr class="hover:bg-red-50/40">
-                  <td class="p-2.5">
-                    <span class="px-2 py-0.5 rounded font-bold badge-p1">P1 (Crítica)</span>
-                  </td>
-                  <td class="p-2.5 text-slate-800 font-semibold">N1 / N2</td>
-                  <td class="p-2.5 font-bold text-slate-900">≤ 15 min</td>
-                  <td class="p-2.5 font-bold text-red-600">≤ 2 horas</td>
-                  <td class="p-2.5 text-amber-700 bg-amber-50/50">Al consumir 75% (1.5 h)</td>
-                  <td class="p-2.5 text-slate-700 font-sans">
-                    Si expira SLA-T o no resolución en N1/N2 → <strong class="text-red-600">Escalamiento Forzoso a N3</strong>
-                  </td>
-                </tr>
-                <tr class="hover:bg-amber-50/40">
-                  <td class="p-2.5">
-                    <span class="px-2 py-0.5 rounded font-bold badge-p2">P2 (Alta)</span>
-                  </td>
-                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
-                  <td class="p-2.5 font-bold text-slate-900">≤ 30 min</td>
-                  <td class="p-2.5 font-bold text-amber-600">≤ 4 horas</td>
-                  <td class="p-2.5 text-amber-700 bg-amber-50/50">Al consumir 75% (3.0 h)</td>
-                  <td class="p-2.5 text-slate-700 font-sans">
-                    Si expira en N1 → Nivel 2; si expira en N2 → Nivel 3
-                  </td>
-                </tr>
-                <tr class="hover:bg-blue-50/40">
-                  <td class="p-2.5">
-                    <span class="px-2 py-0.5 rounded font-bold badge-p3">P3 (Media)</span>
-                  </td>
-                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
-                  <td class="p-2.5 font-bold text-slate-900">≤ 1 hora</td>
-                  <td class="p-2.5 font-bold text-blue-600">≤ 8 horas</td>
-                  <td class="p-2.5 text-blue-700 bg-blue-50/50">Al consumir 80% (6.4 h)</td>
-                  <td class="p-2.5 text-slate-700 font-sans">
-                    Si expira en N1 → Nivel 2
-                  </td>
-                </tr>
-                <tr class="hover:bg-emerald-50/40">
-                  <td class="p-2.5">
-                    <span class="px-2 py-0.5 rounded font-bold badge-p4">P4 (Baja)</span>
-                  </td>
-                  <td class="p-2.5 text-slate-800 font-semibold">Nivel 1</td>
-                  <td class="p-2.5 font-bold text-slate-900">≤ 2 horas</td>
-                  <td class="p-2.5 font-bold text-emerald-600">≤ 24 horas</td>
-                  <td class="p-2.5 text-emerald-700 bg-emerald-50/50">Al consumir 85% (20.4 h)</td>
-                  <td class="p-2.5 text-slate-700 font-sans">
-                    Si expira en N1 → Nivel 2
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="mt-4 p-3 rounded-lg bg-slate-900 text-white flex items-center justify-between text-xs">
-            <span>⏱️ <strong>SLA-R:</strong> Tiempo de Primera Respuesta | <strong>SLA-T:</strong> Tiempo de Restablecimiento del Servicio</span>
-            <span class="font-mono text-blue-300">Patrón Observer Activo</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- ========================================================== -->
-      <!-- SLIDE 5: OBJETIVOS, ALCANCE (VERTICAL SLICE) Y RESTRICCIONES -->
+      <!-- SLIDE 4: OBJETIVOS, ALCANCE (VERTICAL SLICE) Y RESTRICCIONES -->
       <!-- ========================================================== -->
       <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
         <div class="mb-4">
@@ -1122,7 +925,7 @@
                 Descompone el microservicio en 4 capas limpias desacopladas e implementa los 3 patrones GoF obligatorios.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(10)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(9)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-700 text-xs font-bold text-center transition-colors">
               Explorar Vista Lógica →
             </button>
           </div>
@@ -1137,7 +940,7 @@
                 Aborda concurrencia, sincronización de flujos y el Worker desacoplado de SLAs frente al Event Loop de Node.js.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(11)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-50 text-amber-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(10)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-50 text-amber-700 text-xs font-bold text-center transition-colors">
               Explorar Procesos →
             </button>
           </div>
@@ -1152,7 +955,7 @@
                 Organización de paquetes (<code class="font-mono">src/presentation</code>, <code class="font-mono">application</code>, <code class="font-mono">domain</code>, <code class="font-mono">infrastructure</code>) y Regla DIP.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(12)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(11)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 text-xs font-bold text-center transition-colors">
               Explorar Desarrollo →
             </button>
           </div>
@@ -1167,7 +970,7 @@
                 Topología de ejecución: Cliente HTTP sobre TLS, Proceso Node.js v24 LTS en Puerto 3000 y repositorio indexado.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(13)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-purple-50 text-purple-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(12)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-purple-50 text-purple-700 text-xs font-bold text-center transition-colors">
               Explorar Despliegue →
             </button>
           </div>
@@ -1178,7 +981,7 @@
             <span class="px-2 py-0.5 rounded bg-blue-600 text-[10px] font-bold font-mono uppercase tracking-wider">Escenario Integrador (+1)</span>
             <p class="text-xs text-slate-300 mt-1">El <strong>CU-02 (Escalamiento de Incidencia por Vencimiento de SLA)</strong> valida y conecta armónicamente las 4 vistas arquitectónicas.</p>
           </div>
-          <button onclick="window.slideDeck.goToSlide(14)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 shadow">
+          <button onclick="window.slideDeck.goToSlide(13)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 shadow">
             Ver Escenario & Tácticas SEI →
           </button>
         </div>
@@ -1911,7 +1714,7 @@
                 </p>
               </div>
             </div>
-            <button onclick="window.slideDeck.goToSlide(19)" class="mt-3 w-full p-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-bold transition-colors shadow flex items-center justify-center gap-1.5">
+            <button onclick="window.slideDeck.goToSlide(18)" class="mt-3 w-full p-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-center text-xs font-bold transition-colors shadow flex items-center justify-center gap-1.5">
               <span>Ver Conclusiones del Proyecto</span>
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
@@ -2105,7 +1908,7 @@
       </button>
 
       <span id="slideCounter" class="px-3 py-1 rounded-md bg-slate-800/80 text-blue-300 font-mono font-bold text-xs border border-slate-700">
-        01 / 21
+        01 / 20
       </span>
 
       <button id="nextBtn" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow transition-colors" title="Siguiente Diapositiva (→ / Espacio)">
