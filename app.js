@@ -6,7 +6,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
-  // 1. METADATOS DE DIAPOSITIVAS (19 SLIDES)
+  // 1. METADATOS DE DIAPOSITIVAS (20 SLIDES)
   // ==========================================
   const SLIDES_METADATA = [
     { id: 1, title: 'Portada Institucional', section: '1. Introducción y Contexto', icon: '🏛️' },
@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 5, title: 'Requisitos Funcionales (MoSCoW) y No Funcionales (ISO 25010)', section: '2. Análisis y Requisitos', icon: '📋' },
     { id: 6, title: 'Modelo de Procesos de Negocio (BPMN 2.0)', section: '2. Análisis y Requisitos', icon: '🔄' },
     { id: 7, title: 'Modelo de Casos de Uso y Especificación CU-02', section: '2. Análisis y Requisitos', icon: '👥' },
-    { id: 8, title: 'Modelo Conceptual de Dominio', section: '2. Análisis y Requisitos', icon: '🧱' },
-    { id: 9, title: 'Diseño Detallado: Diagrama de Clases de Diseño (UML 2.5.1)', section: '2. Análisis y Requisitos', icon: '📊' },
+    { id: 8, title: 'Modelo Conceptual de Dominio (Directrices Larman)', section: '2. Análisis y Requisitos', icon: '🧱' },
+    { id: 9, title: 'Diagrama de Clases de Diseño (UML 2.5.1)', section: '2. Análisis y Requisitos', icon: '📊' },
     { id: 10, title: 'Arquitectura de Software: Modelo 4+1 de Kruchten', section: '3. Arquitectura 4+1', icon: '📐' },
     { id: 11, title: 'Vista 1: Vista Lógica (Logical View)', section: '3. Arquitectura 4+1', icon: '🧩' },
     { id: 12, title: 'Vista 2: Vista de Procesos (Process View)', section: '3. Arquitectura 4+1', icon: '⚙️' },
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 14, title: 'Vista 4: Vista Física / Despliegue (Physical View)', section: '3. Arquitectura 4+1', icon: '🖥️' },
     { id: 15, title: 'Vista +1: Escenario Integrador y Tácticas SEI/ADD', section: '3. Arquitectura 4+1', icon: '🛡️' },
     { id: 16, title: 'Diseño Detallado: Diagrama de Secuencia (CU-02)', section: '4. Diseño Detallado', icon: '⏳' },
-    { id: 17, title: 'Diseño Detallado: Diagrama de Estados (Ciclo de Vida)', section: '4. Diseño Detallado', icon: '🔀' },
+    { id: 17, title: 'Diseño Detallado: Diagrama de Estados (Ciclo ITIL v4)', section: '4. Diseño Detallado', icon: '🔀' },
     { id: 18, title: 'Diseño Detallado: Diagrama de Componentes y Acoplamiento', section: '4. Diseño Detallado', icon: '🔌' },
     { id: 19, title: 'Conclusiones y Recomendaciones Técnicas', section: '5. Cierre y Evaluación', icon: '📝' },
     { id: 20, title: 'Agradecimientos y Ronda de Preguntas (Q&A)', section: '5. Cierre y Evaluación', icon: '🎓' }
@@ -39,6 +39,17 @@ document.addEventListener('DOMContentLoaded', () => {
       this.slides = Array.from(document.querySelectorAll('.slide'));
       this.totalSlides = this.slides.length;
       this.currentIndex = 0;
+
+      // Cargar metadatos dinámicamente desde el DOM con fallback a SLIDES_METADATA
+      this.slidesData = this.slides.map((slide, idx) => {
+        const fallback = SLIDES_METADATA[idx] || {};
+        return {
+          id: parseInt(slide.getAttribute('data-slide-id'), 10) || idx + 1,
+          title: slide.getAttribute('data-title') || fallback.title || `Diapositiva ${idx + 1}`,
+          section: slide.getAttribute('data-section') || fallback.section || 'General',
+          icon: slide.getAttribute('data-icon') || fallback.icon || '📄'
+        };
+      });
 
       // Elementos de UI
       this.progressBar = document.getElementById('progressBar');
@@ -121,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Actualizar título de sección en header
-      const meta = SLIDES_METADATA[this.currentIndex];
+      const meta = (this.slidesData && this.slidesData[this.currentIndex]) || SLIDES_METADATA[this.currentIndex];
       if (meta && this.sectionBadge) {
         this.sectionBadge.textContent = `${meta.section} • Diapositiva ${meta.id}`;
       }
@@ -153,17 +164,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!this.gridContainer) return;
       this.gridContainer.innerHTML = '';
 
-      SLIDES_METADATA.forEach((meta, idx) => {
+      const dataSource = (this.slidesData && this.slidesData.length === this.totalSlides) ? this.slidesData : SLIDES_METADATA;
+
+      dataSource.forEach((meta, idx) => {
+        const isCurrent = (idx === this.currentIndex);
         const card = document.createElement('div');
         card.className = `p-4 rounded-xl border transition-all cursor-pointer text-left flex flex-col justify-between ${
-          idx === this.currentIndex 
+          isCurrent 
             ? 'bg-blue-900/40 border-blue-500 ring-2 ring-blue-400 text-white shadow-lg' 
             : 'bg-slate-800/80 border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white'
         }`;
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between text-xs font-mono mb-2">
-              <span class="px-2 py-0.5 rounded bg-slate-900/80 font-bold ${idx === this.currentIndex ? 'text-blue-300' : 'text-slate-400'}">
+              <span class="px-2 py-0.5 rounded bg-slate-900/80 font-bold ${isCurrent ? 'text-blue-300' : 'text-slate-400'}">
                 SLIDE ${String(meta.id).padStart(2, '0')}
               </span>
               <span class="text-base">${meta.icon}</span>
