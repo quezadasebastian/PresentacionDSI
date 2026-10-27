@@ -69,10 +69,10 @@
       <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="análisis" data-target-slide="5">
         2. Análisis
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="arquitectura 4+1" data-target-slide="9">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="arquitectura 4+1" data-target-slide="10">
         3. Arquitectura 4+1
       </button>
-      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="diseño detallado" data-target-slide="15">
+      <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="diseño detallado" data-target-slide="16">
         4. Diseño Detallado
       </button>
       <button class="section-nav-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition-all" data-section="cierre" data-target-slide="19">
@@ -899,6 +899,90 @@
       </section>
 
       <!-- ========================================================== -->
+      <!-- SLIDE 9: DISEÑO DETALLADO: DIAGRAMA DE CLASES (UML 2.5.1) -->
+      <!-- ========================================================== -->
+      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
+        <div class="flex items-center justify-between mb-3 shrink-0">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
+              <span>Diseño Orientado a Objetos</span>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio
+            </h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
+          <!-- Visor SVG Diagrama de Clases -->
+          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
+            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI">
+              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
+                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
+                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
+                </button>
+                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
+                <div class="w-px h-3.5 bg-slate-200"></div>
+                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+
+              <div class="pan-zoom-viewport">
+                <div class="pan-zoom-stage">
+                  <img src="Assets/clases-diseno.svg" onerror="this.src='Assets/Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI.svg'" alt="Diagrama de Clases" class="diagram-image max-h-[460px] w-auto">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selector de Patrones GoF -->
+          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
+            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
+              Patrones GoF Implementados
+            </h3>
+            <div class="space-y-2.5 text-slate-700">
+              <div class="p-2.5 rounded bg-blue-50/70 border border-blue-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 font-mono">Creacional</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">1. Factory Method:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Clase base abstracta <code class="font-mono text-blue-600">Ticket</code> y factorías concretas por categoría (<code class="font-mono">HardwareTicketFactory</code>, etc.) que calculan el SLA exacto.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-emerald-50/70 border border-emerald-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 font-mono">Comportamiento</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">2. Chain of Responsibility:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Manejador base <code class="font-mono text-emerald-700">SupportLevelHandler</code> con enlace <code class="font-mono">nextHandler</code> y eslabones concretos: <code class="font-mono">L1SupportHandler</code>, <code class="font-mono">L2SupportHandler</code> y <code class="font-mono">L3SupportHandler</code>.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-amber-50/70 border border-amber-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 font-mono">Comportamiento</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">3. Observer Pattern:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Interfaz <code class="font-mono text-amber-700">ISlaSubject</code> en <code class="font-mono">SlaBreachNotifier</code> que notifica concurrentemente a <code class="font-mono">ConsoleLogObserver</code> y observadores suscritos.
+                </p>
+              </div>
+
+              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 font-mono">Estructural</span>
+                <strong class="text-xs font-bold text-slate-900 block mt-0.5">4. Repository Pattern:</strong>
+                <p class="text-[11px] mt-1 leading-relaxed">
+                  Interfaz desacoplada <code class="font-mono text-slate-800">ITicketRepository</code> e implementación en memoria <code class="font-mono">InMemoryTicketRepository</code>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================================== -->
       <!-- SLIDE 10: ARQUITECTURA 4+1 DE KRUCHTEN (INTRODUCCIÓN) -->
       <!-- ========================================================== -->
       <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-y-auto custom-scrollbar">
@@ -925,7 +1009,7 @@
                 Descompone el microservicio en 4 capas limpias desacopladas e implementa los 3 patrones GoF obligatorios.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(9)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(10)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-blue-50 text-blue-700 text-xs font-bold text-center transition-colors">
               Explorar Vista Lógica →
             </button>
           </div>
@@ -940,7 +1024,7 @@
                 Aborda concurrencia, sincronización de flujos y el Worker desacoplado de SLAs frente al Event Loop de Node.js.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(10)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-50 text-amber-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(11)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-50 text-amber-700 text-xs font-bold text-center transition-colors">
               Explorar Procesos →
             </button>
           </div>
@@ -955,7 +1039,7 @@
                 Organización de paquetes (<code class="font-mono">src/presentation</code>, <code class="font-mono">application</code>, <code class="font-mono">domain</code>, <code class="font-mono">infrastructure</code>) y Regla DIP.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(11)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(12)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-emerald-50 text-emerald-700 text-xs font-bold text-center transition-colors">
               Explorar Desarrollo →
             </button>
           </div>
@@ -970,7 +1054,7 @@
                 Topología de ejecución: Cliente HTTP sobre TLS, Proceso Node.js v24 LTS en Puerto 3000 y repositorio indexado.
               </p>
             </div>
-            <button onclick="window.slideDeck.goToSlide(12)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-purple-50 text-purple-700 text-xs font-bold text-center transition-colors">
+            <button onclick="window.slideDeck.goToSlide(13)" class="mt-3 w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-purple-50 text-purple-700 text-xs font-bold text-center transition-colors">
               Explorar Despliegue →
             </button>
           </div>
@@ -981,7 +1065,7 @@
             <span class="px-2 py-0.5 rounded bg-blue-600 text-[10px] font-bold font-mono uppercase tracking-wider">Escenario Integrador (+1)</span>
             <p class="text-xs text-slate-300 mt-1">El <strong>CU-02 (Escalamiento de Incidencia por Vencimiento de SLA)</strong> valida y conecta armónicamente las 4 vistas arquitectónicas.</p>
           </div>
-          <button onclick="window.slideDeck.goToSlide(13)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 shadow">
+          <button onclick="window.slideDeck.goToSlide(14)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shrink-0 shadow">
             Ver Escenario & Tácticas SEI →
           </button>
         </div>
@@ -1365,89 +1449,7 @@
         </div>
       </section>
 
-      <!-- ========================================================== -->
-      <!-- SLIDE 16: DISEÑO DETALLADO: DIAGRAMA DE CLASES (UML 2.5.1) -->
-      <!-- ========================================================== -->
-      <section class="slide flex-col p-6 md:p-8 w-full h-full bg-slate-50 overflow-hidden">
-        <div class="flex items-center justify-between mb-3 shrink-0">
-          <div>
-            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-wider">
-              <span>4.2 Diseño Orientado a Objetos</span>
-            </div>
-            <h2 class="text-2xl font-extrabold text-slate-900">
-              Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio
-            </h2>
-          </div>
-        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 overflow-hidden min-h-0">
-          <!-- Visor SVG Diagrama de Clases -->
-          <div class="lg:col-span-8 h-full min-h-0 flex flex-col">
-            <div class="pan-zoom-container flex-1 w-full h-full" data-diagram-title="Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI">
-              <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur px-2 py-1 rounded-lg border border-slate-200 shadow-md">
-                <span class="zoom-level-badge text-xs font-mono font-bold text-slate-600 px-1.5">100%</span>
-                <button class="btn-zoom-in p-1 rounded hover:bg-slate-100 text-slate-700" title="Acercar (+)">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                </button>
-                <button class="btn-zoom-out p-1 rounded hover:bg-slate-100 text-slate-700" title="Alejar (-)">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path></svg>
-                </button>
-                <button class="btn-zoom-reset px-2 py-0.5 rounded hover:bg-slate-100 text-slate-700 text-xs font-semibold">Reset</button>
-                <div class="w-px h-3.5 bg-slate-200"></div>
-                <button class="btn-zoom-modal p-1 rounded hover:bg-blue-50 text-blue-600" title="Maximizar en Pantalla Completa">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
-                </button>
-              </div>
-
-              <div class="pan-zoom-viewport">
-                <div class="pan-zoom-stage">
-                  <img src="Assets/clases-diseno.svg" onerror="this.src='Assets/Diagrama de Clases de Diseño (UML 2.5.1) - Microservicio Mesa de Ayuda TI.svg'" alt="Diagrama de Clases" class="diagram-image max-h-[460px] w-auto">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Selector de Patrones GoF -->
-          <div class="lg:col-span-4 h-full flex flex-col justify-between overflow-y-auto custom-scrollbar bg-white rounded-xl border border-slate-200 shadow-sm p-4 text-xs">
-            <h3 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2 text-blue-600">
-              Patrones GoF Implementados
-            </h3>
-            <div class="space-y-2.5 text-slate-700">
-              <div class="p-2.5 rounded bg-blue-50/70 border border-blue-200">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 font-mono">Creacional</span>
-                <strong class="text-xs font-bold text-slate-900 block mt-0.5">1. Factory Method:</strong>
-                <p class="text-[11px] mt-1 leading-relaxed">
-                  Clase base abstracta <code class="font-mono text-blue-600">Ticket</code> y factorías concretas por categoría (<code class="font-mono">HardwareTicketFactory</code>, etc.) que calculan el SLA exacto.
-                </p>
-              </div>
-
-              <div class="p-2.5 rounded bg-emerald-50/70 border border-emerald-200">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 font-mono">Comportamiento</span>
-                <strong class="text-xs font-bold text-slate-900 block mt-0.5">2. Chain of Responsibility:</strong>
-                <p class="text-[11px] mt-1 leading-relaxed">
-                  Manejador base <code class="font-mono text-emerald-700">SupportLevelHandler</code> con enlace <code class="font-mono">nextHandler</code> y eslabones concretos: <code class="font-mono">L1SupportHandler</code>, <code class="font-mono">L2SupportHandler</code> y <code class="font-mono">L3SupportHandler</code>.
-                </p>
-              </div>
-
-              <div class="p-2.5 rounded bg-amber-50/70 border border-amber-200">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-700 font-mono">Comportamiento</span>
-                <strong class="text-xs font-bold text-slate-900 block mt-0.5">3. Observer Pattern:</strong>
-                <p class="text-[11px] mt-1 leading-relaxed">
-                  Interfaz <code class="font-mono text-amber-700">ISlaSubject</code> en <code class="font-mono">SlaBreachNotifier</code> que notifica concurrentemente a <code class="font-mono">ConsoleLogObserver</code> y observadores suscritos.
-                </p>
-              </div>
-
-              <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-600 font-mono">Estructural</span>
-                <strong class="text-xs font-bold text-slate-900 block mt-0.5">4. Repository Pattern:</strong>
-                <p class="text-[11px] mt-1 leading-relaxed">
-                  Interfaz desacoplada <code class="font-mono text-slate-800">ITicketRepository</code> e implementación en memoria <code class="font-mono">InMemoryTicketRepository</code>.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- ========================================================== -->
       <!-- SLIDE 17: DISEÑO DETALLADO: DIAGRAMA DE SECUENCIA (CU-02) -->
